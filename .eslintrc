@@ -4,5 +4,9 @@
   },
   "extends": [
     "airbnb-base"
-  ]
+  ],
+  "rules": {
+    "func-names": ["off"],
+    "import/no-dynamic-require": ["off"]
+  }
 }
