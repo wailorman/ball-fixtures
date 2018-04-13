@@ -2,11 +2,18 @@
   "env": {
     "commonjs": true
   },
-  "extends": [
-    "airbnb-base"
-  ],
+  "extends": ["airbnb-base"],
   "rules": {
     "func-names": ["off"],
-    "import/no-dynamic-require": ["off"]
+    "import/no-dynamic-require": ["off"],
+    "quotes": ["off"]
+  },
+  "globals": {
+    "it": true,
+    "describe": true,
+    "before": true,
+    "after": true,
+    "beforeEach": true,
+    "afterEach": true
   }
 }
