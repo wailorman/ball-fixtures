@@ -94,3 +94,15 @@ exports.resetAutoIncrement = async (args = {}, opts, ctx = {}) => {
   const query = `ALTER SEQUENCE "${tableName}_id_seq" RESTART WITH ${num};`;
   await db.sequelize.query(query, { type: db.sequelize.QueryTypes.SELECT });
 };
+
+exports.truncateModels = async (args = {}, opts, ctx = {}) => {
+  const { models: _models = [] } = args;
+  const { db } = ctx;
+
+  const models = [].concat(_models);
+
+  await Promise.all(models.map(async (model) => {
+    await exports.resetAutoIncrement({ model }, {}, { db });
+    await model.truncate();
+  }));
+};
