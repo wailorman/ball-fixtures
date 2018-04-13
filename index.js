@@ -75,3 +75,22 @@ exports.generateUUID = function (...args) {
 };
 
 exports.gu = exports.generateUUID;
+
+exports.resetAutoIncrement = async (args = {}, opts, ctx = {}) => {
+  const { model, num = 1 } = args;
+  const { db } = ctx;
+
+  const tableName = model.getTableName();
+
+  const noAutoIncrementIdAttr =
+    !model.primaryKeys ||
+    !model.primaryKeys.id ||
+    model.primaryKeys.id.type.toString() !== 'INTEGER';
+
+  if (noAutoIncrementIdAttr) {
+    return;
+  }
+
+  const query = `ALTER SEQUENCE "${tableName}_id_seq" RESTART WITH ${num};`;
+  await db.sequelize.query(query, { type: db.sequelize.QueryTypes.SELECT });
+};
