@@ -6,7 +6,8 @@
   "rules": {
     "func-names": ["off"],
     "import/no-dynamic-require": ["off"],
-    "quotes": ["off"]
+    "quotes": ["off"],
+    "no-underscore-dangle": ["off"]
   },
   "globals": {
     "it": true,
@@ -15,6 +16,7 @@
     "after": true,
     "beforeEach": true,
     "afterEach": true,
-    "beforeAll": true
+    "beforeAll": true,
+    "afterAll": true
   }
 }
