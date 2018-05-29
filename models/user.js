@@ -1,9 +1,14 @@
-'use strict';
+/* eslint-disable no-unused-vars */
+
 module.exports = (sequelize, DataTypes) => {
-  var User = sequelize.define('User', {
-    name: DataTypes.STRING
-  }, {});
-  User.associate = function(models) {
+  const User = sequelize.define(
+    'User',
+    {
+      name: DataTypes.STRING,
+    },
+    {},
+  );
+  User.associate = function (models) {
     // associations can be defined here
   };
   return User;
