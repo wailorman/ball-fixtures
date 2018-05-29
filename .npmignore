@@ -1,1 +1,8 @@
 node_modules/
+docker-compose.yml
+config/config.json
+migrations/
+models/
+seeders/
+
+yarn-error.log
