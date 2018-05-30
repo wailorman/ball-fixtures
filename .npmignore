@@ -7,6 +7,9 @@ seeders/
 
 src/
 lib/__tests__
-lib/types.js
 
 yarn-error.log
+.editorconfig
+.prettierignore
+tsconfig.json
+tslint.json
