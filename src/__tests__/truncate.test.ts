@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
-import db from '../../../models';
-import ballFixturesFactory from '../../index';
+import db from '../../models';
+import ballFixturesFactory from '../index';
 
 const ballFixtures = ballFixturesFactory({ db });
 
