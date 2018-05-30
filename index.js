@@ -61,7 +61,7 @@ module.exports = (conf = {}) => {
   };
 
   E.truncateAll = async () => {
-    const modelNames = db._modelNames;
+    const modelNames = Object.keys(db.sequelize.models);
     const models = modelNames.map(modelName => db[modelName]);
 
     return Promise.all(models.map(E.truncateModel));
