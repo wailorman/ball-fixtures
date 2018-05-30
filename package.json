@@ -10,16 +10,15 @@
     "lodash": "^4.17.10"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.3",
     "@types/jest": "^22.2.3",
     "@types/lodash": "^4.14.109",
     "@types/lodash.pad": "^4.5.3",
     "@types/node": "^10.1.4",
+    "@types/sequelize": "^4.27.20",
     "babel-core": "^6.0.0",
     "babel-jest": "^23.0.1",
     "chai": "^4.1.2",
-    "eslint": "^4.9.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.7.0",
     "jest": "^23.0.1",
     "pg": "^7.4.3",
     "sequelize": "^4.37.10",
@@ -29,14 +28,11 @@
     "tsc": "^1.20150623.0",
     "tslint": "^5.10.0",
     "tslint-config-airbnb": "^5.9.2",
-    "typescript": "^2.8.3",
-    "typescript-eslint-parser": "^15.0.0"
+    "typescript": "^2.8.3"
   },
-  "peerDependencies": {
-    "sequelize": "*"
-  },
+  "peerDependencies": {},
   "scripts": {
-    "build": "tsc",
+    "prepublish": "tsc",
     "test-debug": "node --inspect ./node_modules/.bin/jest",
     "test": "node ./node_modules/.bin/jest"
   },

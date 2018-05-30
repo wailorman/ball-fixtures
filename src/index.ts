@@ -1,51 +1,47 @@
 import { pad } from 'lodash';
 
-import { BallFixturesConfig } from './types';
+import { Config, Fixtures } from './types';
 
-module.exports = (conf: BallFixturesConfig) => {
+const ballFixturesFactory = (conf: Config) => {
   const { db } = conf;
 
-  const E: any = {};
+  function testCleaner(): void {
+    beforeAll(async () => truncateAll());
+    afterAll(async () => truncateAll());
+  }
 
-  E.testCleaner = function () {
-    beforeAll(async () => E.truncateAll());
-    afterAll(async () => E.truncateAll());
-  };
-
-  E.clean = E.testCleaner;
-
-  E.jest = function (fixtures) {
+  function jest(fixtures: Fixtures): void {
     beforeEach(async () => {
-      await E.truncate(fixtures);
-      await E.create(fixtures);
+      await truncate(fixtures);
+      await create(fixtures);
     });
 
     afterAll(async () => {
-      await E.truncate(fixtures);
+      await truncate(fixtures);
     });
-  };
+  }
 
   // TODO: Promise
   // TODO: Curry for users
   // TODO: By default just run. Mocha's beforeEach/... — optionally
 
-  E.mocha = function (fixtures) {
+  function mocha(fixtures: Fixtures): void {
     beforeEach(async () => {
-      await E.truncate(fixtures);
-      await E.create(fixtures);
+      await truncate(fixtures);
+      await create(fixtures);
     });
 
     afterAll(async () => {
-      await E.truncate(fixtures);
+      await truncate(fixtures);
     });
-  };
+  }
 
-  E.load = async (fixtures) => {
-    await E.truncate(fixtures);
-    await E.create(fixtures);
-  };
+  async function load(fixtures: Fixtures): Promise<void> {
+    await truncate(fixtures);
+    await create(fixtures);
+  }
 
-  E.resetAutoIncrement = async (model, num = 1) => {
+  async function resetAutoIncrement(model: any, num = 1): Promise<void> {
     const tableName = model.getTableName();
 
     const noAutoIncrementIdAttr =
@@ -60,56 +56,58 @@ module.exports = (conf: BallFixturesConfig) => {
     const resetAutoIncrementQuery = `ALTER SEQUENCE "${tableName}_id_seq" RESTART WITH ${num};`;
     const query = str => db.sequelize.query(str, { type: db.sequelize.QueryTypes.SELECT });
     await query(resetAutoIncrementQuery);
-  };
+  }
 
-  E.truncateAll = async () => {
+  async function truncateAll(): Promise<void> {
     const modelNames = Object.keys(db.sequelize.models);
     const models = modelNames.map(modelName => db[modelName]);
 
-    return Promise.all(models.map(E.truncateModel));
-  };
+    await Promise.all(models.map(truncateModel));
+  }
 
-  E.truncate = async (fixtures) => {
+  async function truncate(fixtures: Fixtures): Promise<void> {
     const modelNames = Object.keys(fixtures);
     const models = modelNames.map(modelName => db[modelName]);
 
-    return Promise.all(models.map(E.truncateModel));
-  };
+    await Promise.all(models.map(truncateModel));
+  }
 
-  E.truncateModel = async (model) => {
-    await E.resetAutoIncrement(model);
+  async function truncateModel(model: any): Promise<void> {
+    await resetAutoIncrement(model);
     await model.truncate();
-  };
+  }
 
-  E.create = async (fixtures) => {
+  async function create(fixtures: Fixtures): Promise<void> {
     const modelNames = Object.keys(fixtures);
 
-    return Promise.all(modelNames.map(modelName =>
+    await Promise.all(modelNames.map(modelName =>
       Promise.all(fixtures[modelName].map((instanceData) => {
         const modelClass = db[modelName];
 
         if (instanceData.id) {
           return Promise.all([
             modelClass.create(instanceData),
-            E.resetAutoIncrement(modelClass, instanceData.id + 10),
+            resetAutoIncrement(modelClass, instanceData.id + 10),
           ]);
         }
         return modelClass.create(instanceData);
       }))));
-  };
+  }
 
-  E.mergeFixtures = array =>
-    array.reduce((curFSet, allF) => {
-      Object.keys(curFSet).forEach((modelName) => {
-        // eslint-disable-next-line no-param-reassign
-        allF[modelName] = [].concat(allF[modelName] || []).concat(curFSet[modelName] || []);
+  function mergeFixtures(array: Fixtures[]): Fixtures {
+    return array.reduce((curFixturesSet, resFixtures) => {
+      Object.keys(curFixturesSet).forEach((modelName) => {
+        resFixtures[modelName] = [
+          ...(resFixtures[modelName] || []),
+          ...(curFixturesSet[modelName] || []),
+        ];
       });
 
-      return allF;
+      return resFixtures;
     }, {});
-  E.merge = E.mergeFixtures;
+  }
 
-  E.generateUUID = function (...args) {
+  function generateUUID(...args): string {
     // 5095072f-5308-40a5-b994-e9b05230a4dd
     //       8|  13|  18|  23|          36|
 
@@ -175,10 +173,26 @@ module.exports = (conf: BallFixturesConfig) => {
     });
 
     return res.join('');
+  }
+
+  return {
+    testCleaner,
+    jest,
+    mocha,
+    load,
+    resetAutoIncrement,
+    truncateAll,
+    truncate,
+    truncateModel,
+    create,
+    mergeFixtures,
+    generateUUID,
+
+    clean: testCleaner,
+    gu: generateUUID,
+    genUUID: generateUUID,
+    merge: mergeFixtures,
   };
-
-  E.gu = E.generateUUID;
-  E.genUUID = E.generateUUID;
-
-  return E;
 };
+
+export default ballFixturesFactory;
