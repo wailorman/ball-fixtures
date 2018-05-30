@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 
-const db = require('../../models');
+const db = require('../../../models');
 const ballFixturesFactory = require('../../index');
 
 const ballFixtures = ballFixturesFactory({ db });

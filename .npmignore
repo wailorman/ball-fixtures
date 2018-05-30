@@ -5,4 +5,8 @@ migrations/
 models/
 seeders/
 
+src/
+lib/__tests__
+lib/types.js
+
 yarn-error.log

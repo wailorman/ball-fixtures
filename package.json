@@ -1,29 +1,68 @@
 {
   "name": "ball-fixtures",
   "version": "0.1.1",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": "https://github.com/wailorman/ball-fixtures.git",
   "author": "Sergey Popov <wailorman@yandex.ru>",
   "license": "MIT",
   "dependencies": {
-    "lodash.pad": "^4.5.1"
+    "lodash": "^4.17.10"
   },
   "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "@types/lodash": "^4.14.109",
+    "@types/lodash.pad": "^4.5.3",
+    "@types/node": "^10.1.4",
+    "babel-core": "^6.0.0",
+    "babel-jest": "^23.0.1",
     "chai": "^4.1.2",
     "eslint": "^4.9.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.7.0",
     "jest": "^23.0.1",
-    "lodash": "^4.17.10",
     "pg": "^7.4.3",
     "sequelize": "^4.37.10",
-    "sequelize-cli": "^4.0.0"
+    "sequelize-cli": "^4.0.0",
+    "ts-jest": "^22.4.6",
+    "ts-node": "^6.0.5",
+    "tsc": "^1.20150623.0",
+    "tslint": "^5.10.0",
+    "tslint-config-airbnb": "^5.9.2",
+    "typescript": "^2.8.3",
+    "typescript-eslint-parser": "^15.0.0"
   },
   "peerDependencies": {
     "sequelize": "*"
   },
   "scripts": {
+    "build": "tsc",
     "test-debug": "node --inspect ./node_modules/.bin/jest",
     "test": "node ./node_modules/.bin/jest"
+  },
+  "jest": {
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec|unit|int))\\.(jsx?|tsx?)$",
+    "testPathIgnorePatterns": [
+      "<rootDir>[/\\\\](build|docs|lib|node_modules|scripts)[/\\\\]"
+    ],
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest",
+      "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+    ],
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "ts",
+      "json",
+      "web.jsx",
+      "jsx",
+      "tsx",
+      "node"
+    ]
   }
 }

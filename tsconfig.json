@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es6",
+    "types": ["node", "jest"],
+    "typeRoots": ["node_modules/@types"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "lib",
+    "noImplicitAny": false,
+    "lib": ["es2017", "es7", "es6", "dom"],
+    "declaration": true,
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "files": ["src/index.ts"],
+  "exclude": ["node_modules"]
+}

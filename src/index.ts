@@ -1,9 +1,11 @@
-const pad = require('lodash.pad');
+import { pad } from 'lodash';
 
-module.exports = (conf = {}) => {
+import { BallFixturesConfig } from './types';
+
+module.exports = (conf: BallFixturesConfig) => {
   const { db } = conf;
 
-  const E = {};
+  const E: any = {};
 
   E.testCleaner = function () {
     beforeAll(async () => E.truncateAll());
@@ -84,15 +86,15 @@ module.exports = (conf = {}) => {
 
     return Promise.all(modelNames.map(modelName =>
       Promise.all(fixtures[modelName].map((instanceData) => {
-        const Model = db[modelName];
+        const modelClass = db[modelName];
 
         if (instanceData.id) {
           return Promise.all([
-            Model.create(instanceData),
-            E.resetAutoIncrement(Model, instanceData.id + 10),
+            modelClass.create(instanceData),
+            E.resetAutoIncrement(modelClass, instanceData.id + 10),
           ]);
         }
-        return Model.create(instanceData);
+        return modelClass.create(instanceData);
       }))));
   };
 
@@ -118,7 +120,7 @@ module.exports = (conf = {}) => {
     const FIVE_GROUPS_LENGTH = 36;
     const FULL_UUID_LENGTH = 36;
 
-    const res = [];
+    const res: string[] = [];
 
     const pushStrToRes = (str) => {
       `${str}`
@@ -127,7 +129,9 @@ module.exports = (conf = {}) => {
         .forEach((char) => {
           if (res.length >= FULL_UUID_LENGTH) {
             return;
-          } else if (
+          }
+
+          if (
             res.length === ONE_GROUP_LENGTH ||
             res.length === TWO_GROUPS_LENGTH ||
             res.length === THREE_GROUPS_LENGTH ||
