@@ -9,7 +9,14 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   User.associate = function (models) {
-    // associations can be defined here
+    User.hasOne(models.UserInfo, {
+      foreignKey: 'userId',
+      as: 'UserInfo',
+    });
+    User.hasMany(models.Post, {
+      foreignKey: 'userId',
+      as: 'Posts',
+    });
   };
   return User;
 };
