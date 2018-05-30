@@ -19,7 +19,9 @@
     "sequelize": "^4.37.10",
     "sequelize-cli": "^4.0.0"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "sequelize": "*"
+  },
   "scripts": {
     "test-debug": "node --inspect ./node_modules/.bin/jest",
     "test": "node ./node_modules/.bin/jest"
