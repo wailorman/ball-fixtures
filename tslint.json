@@ -3,7 +3,8 @@
   "rules": {
     "import-name": ["off"],
     "align": false,
-    "quotemark": false
+    "quotemark": false,
+    "ter-arrow-parens": false
   },
   "globals": {
     "it": true,
