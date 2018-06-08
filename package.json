@@ -46,6 +46,7 @@
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
+    "setupFiles": [],
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest",
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest"
