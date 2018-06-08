@@ -6,6 +6,7 @@ models/
 seeders/
 
 src/
+scripts/
 lib/__tests__
 
 yarn-error.log
