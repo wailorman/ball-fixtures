@@ -15,11 +15,11 @@ export function generateUUID(...args): string {
 
   const res: string[] = [];
 
-  const pushStrToRes = (str) => {
+  const pushStrToRes = str => {
     `${str}`
       .replace(/[^0-9a-f]/g, '0')
       .split('')
-      .forEach((char) => {
+      .forEach(char => {
         if (res.length >= FULL_UUID_LENGTH) {
           return;
         }
@@ -58,7 +58,7 @@ export function generateUUID(...args): string {
     }
   };
 
-  [args[0], args[1], args[2], args[3], args[4]].forEach((arg) => {
+  [args[0], args[1], args[2], args[3], args[4]].forEach(arg => {
     if (arg) {
       pushStrToRes(`${arg}f`);
     } else {
@@ -72,7 +72,7 @@ export function generateUUID(...args): string {
 
 export function mergeFixtures(array: Fixtures[]): Fixtures {
   return array.reduce((curFixturesSet, resFixtures) => {
-    Object.keys(curFixturesSet).forEach((modelName) => {
+    Object.keys(curFixturesSet).forEach(modelName => {
       resFixtures[modelName] = [
         ...(resFixtures[modelName] || []),
         ...(curFixturesSet[modelName] || []),
