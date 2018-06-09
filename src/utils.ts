@@ -82,3 +82,26 @@ export function mergeFixtures(array: Fixtures[]): Fixtures {
     return resFixtures;
   }, {});
 }
+
+export interface ArrayToMapOpts {
+  /** if element in array is object */
+  key?: string | ((arrayElem: any) => string);
+}
+
+export function arrayToMap(array: any[], opts?: ArrayToMapOpts) {
+  const { key = null } = opts || {};
+
+  return array.reduce((prev: object, cur: any | object) => {
+    if (typeof cur === 'object' && key) {
+      if (typeof key === 'function') {
+        prev[key(cur)] = cur;
+      } else {
+        prev[cur[key]] = cur;
+      }
+    } else {
+      prev[cur] = true;
+    }
+
+    return prev;
+  }, {});
+}
