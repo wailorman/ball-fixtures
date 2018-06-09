@@ -7,6 +7,7 @@
   "author": "Sergey Popov <wailorman@yandex.ru>",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "lodash": "^4.17.10"
   },
   "devDependencies": {

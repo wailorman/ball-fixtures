@@ -6,10 +6,12 @@ import ballFixturesFactory from '../index';
 const ballFixtures = ballFixturesFactory({ db });
 
 describe(`#truncate`, () => {
-  beforeEach(async () => {
-    await db.User.truncate();
-    await db.Post.truncate();
+  const syncDb = () => db.sequelize.sync({ force: true });
 
+  afterAll(syncDb);
+
+  beforeEach(async () => {
+    await syncDb();
     await db.User.bulkCreate([
       {
         id: 1,
@@ -24,7 +26,6 @@ describe(`#truncate`, () => {
         name: 'Bob',
       },
     ]);
-
     await db.Post.bulkCreate([
       {
         title: "Alice's post",
@@ -39,9 +40,7 @@ describe(`#truncate`, () => {
         userId: 3,
       },
     ]);
-
     const [allUsers, allPosts] = await Promise.all([db.User.findAll(), db.Post.findAll()]);
-
     assert.lengthOf(allUsers, 3);
     assert.lengthOf(allPosts, 3);
   });
@@ -53,7 +52,8 @@ describe(`#truncate`, () => {
       const [allUsers, allPosts] = await Promise.all([db.User.findAll(), db.Post.findAll()]);
 
       assert.lengthOf(allUsers, 0);
-      assert.lengthOf(allPosts, 3);
+      assert.lengthOf(allPosts, 0);
+      // assert.lengthOf(allPosts, 3);
     });
   });
 

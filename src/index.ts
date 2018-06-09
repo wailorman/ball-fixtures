@@ -3,6 +3,7 @@ import {
   mergeFixtures,
   generateUUID,
 } from './utils';
+import bluebird from 'bluebird';
 
 const ballFixturesFactory = (conf: Config) => {
   const { db } = conf;
@@ -71,12 +72,13 @@ const ballFixturesFactory = (conf: Config) => {
     const modelNames = Object.keys(fixtures);
     const models = modelNames.map(modelName => db[modelName]);
 
-    await Promise.all(models.map(truncateModel));
+    await bluebird.each(models, truncateModel);
   }
 
-  async function truncateModel(model: any): Promise<void> {
-    await resetAutoIncrement(model);
-    await model.truncate();
+  async function truncateModel(model: any | any[]): Promise<void> {
+    await db.sequelize.query(`TRUNCATE TABLE "${model.getTableName()}" CASCADE;`, {
+      type: db.sequelize.QueryTypes.SELECT,
+    });
   }
 
   async function create(fixtures: Fixtures): Promise<void> {
