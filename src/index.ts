@@ -1,5 +1,8 @@
 import { Config, Fixtures } from './types';
-import { mergeFixtures, generateUUID } from './utils';
+import {
+  mergeFixtures,
+  generateUUID,
+} from './utils';
 
 const ballFixturesFactory = (conf: Config) => {
   const { db } = conf;
