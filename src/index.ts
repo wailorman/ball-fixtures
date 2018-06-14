@@ -123,4 +123,4 @@ const ballFixturesFactory = (conf: Config) => {
   };
 };
 
-export default ballFixturesFactory;
+module.exports = ballFixturesFactory;
