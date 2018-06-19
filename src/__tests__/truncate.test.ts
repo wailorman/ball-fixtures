@@ -40,20 +40,42 @@ describe(`#truncate`, () => {
         userId: 3,
       },
     ]);
-    const [allUsers, allPosts] = await Promise.all([db.User.findAll(), db.Post.findAll()]);
+    await db.Orphan.bulkCreate([
+      {
+        name: "Alice's post",
+      },
+      {
+        name: "Jane's post",
+      },
+      {
+        name: "Bob's post",
+      },
+    ]);
+
+    const [allUsers, allPosts, allOrphans] = await Promise.all([
+      db.User.findAll(),
+      db.Post.findAll(),
+      db.Orphan.findAll(),
+    ]);
+
     assert.lengthOf(allUsers, 3);
     assert.lengthOf(allPosts, 3);
+    assert.lengthOf(allOrphans, 3);
   });
 
   describe(`#truncate`, () => {
     it(`should remove all rows in one table`, async () => {
       await ballFixtures.truncate({ User: [] });
 
-      const [allUsers, allPosts] = await Promise.all([db.User.findAll(), db.Post.findAll()]);
+      const [allUsers, allPosts, allOrphans] = await Promise.all([
+        db.User.findAll(),
+        db.Post.findAll(),
+        db.Orphan.findAll(),
+      ]);
 
       assert.lengthOf(allUsers, 0);
       assert.lengthOf(allPosts, 0);
-      // assert.lengthOf(allPosts, 3);
+      assert.lengthOf(allOrphans, 3);
     });
   });
 
@@ -61,10 +83,15 @@ describe(`#truncate`, () => {
     it(`should clean up all tables`, async () => {
       await ballFixtures.truncateAll();
 
-      const [allUsers, allPosts] = await Promise.all([db.User.findAll(), db.Post.findAll()]);
+      const [allUsers, allPosts, allOrphans] = await Promise.all([
+        db.User.findAll(),
+        db.Post.findAll(),
+        db.Orphan.findAll(),
+      ]);
 
       assert.lengthOf(allUsers, 0);
       assert.lengthOf(allPosts, 0);
+      assert.lengthOf(allOrphans, 0);
     });
   });
 });
