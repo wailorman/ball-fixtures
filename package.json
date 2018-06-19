@@ -37,8 +37,8 @@
   "peerDependencies": {},
   "scripts": {
     "prepublish": "tsc",
-    "test-debug": "node --inspect ./node_modules/.bin/jest",
-    "test": "node ./node_modules/.bin/jest"
+    "test-debug": "node --inspect ./node_modules/.bin/jest --runInBand ",
+    "test": "node ./node_modules/.bin/jest --bail --expand -i --runInBand "
   },
   "jest": {
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec|unit|int))\\.(jsx?|tsx?)$",
