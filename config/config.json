@@ -2,7 +2,7 @@
   "development": {
     "username": "postgres",
     "password": null,
-    "database": "postgres",
+    "database": "ball-fixtures",
     "host": "192.168.99.100",
     "port": "5436",
     "dialect": "postgres",
@@ -12,7 +12,7 @@
   "test": {
     "username": "postgres",
     "password": null,
-    "database": "postgres",
+    "database": "ball-fixtures",
     "host": "192.168.99.100",
     "port": "5436",
     "dialect": "postgres",
@@ -22,7 +22,7 @@
   "production": {
     "username": "postgres",
     "password": null,
-    "database": "postgres",
+    "database": "ball-fixtures",
     "host": "192.168.99.100",
     "port": "5436",
     "dialect": "postgres",
