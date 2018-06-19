@@ -17,6 +17,11 @@ import {
 } from '../relations';
 
 describe(`Dependency tree`, () => {
+  const syncDb = () => db.sequelize.sync({ force: true });
+
+  afterAll(syncDb);
+  beforeEach(syncDb);
+
   describe(`#getDependencyMap`, () => {
     it(`should generate associations list`, async () => {
       const res = getDependencyMap({ db });
