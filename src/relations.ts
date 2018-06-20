@@ -1,4 +1,5 @@
 import { arrayToMap } from './utils';
+import { AssociationType, DependencyMap } from './types';
 
 export type DependencyNode = string | number;
 export interface DetectCircularDependencyArgs {
@@ -52,26 +53,17 @@ export function detectCircularDependency(args: DetectCircularDependencyArgs): vo
   });
 }
 
-export interface DependencyMap {
-  [key: string]: { [key: string]: boolean };
-}
-export enum AssociationTypes {
-  BelongsTo = 'BelongsTo',
-  HasMany = 'HasMany',
-  HasOne = 'HasOne',
-}
-
 export interface GetDependencyMapArgs {
   db: any;
-  associationType?: AssociationTypes | AssociationTypes[];
+  associationType?: AssociationType | AssociationType[];
 }
 export function getDependencyMap(args: GetDependencyMapArgs): DependencyMap {
-  const { db, associationType = [AssociationTypes.BelongsTo] } = args;
+  const { db, associationType = [AssociationType.BelongsTo] } = args;
   const associationTypeMap = arrayToMap([].concat(associationType));
   return Object.keys(db).reduce((prev: DependencyMap, modelName: string) => {
     const model = db[modelName];
-    const modelAssociations = model.associations;
 
+    const modelAssociations = model && model.associations;
     if (!modelAssociations) return prev;
 
     const belongsToAssociations = Object.keys(modelAssociations)

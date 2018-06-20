@@ -3,8 +3,6 @@ import db from '../../models';
 import {
   getDependencyMap,
   modelDependencySort,
-  AssociationTypes,
-  AssociationTypes as AT,
   deserializeConstraint,
   serializeConstraint,
   getForeignConstraints,
@@ -13,9 +11,9 @@ import {
   getModelForeignConstraints,
   getAllRelatedNodesFor,
   PgConstraint,
-  DependencyMap,
   DependencyNode,
 } from '../relations';
+import { AssociationType as AT, DependencyMap } from '../types';
 
 describe(`Dependency tree`, () => {
   const syncDb = () => db.sequelize.sync({ force: true });

@@ -6,3 +6,13 @@ export interface Config {
 export interface Fixtures {
   [key: string]: any[];
 }
+
+export enum AssociationType {
+  BelongsTo = 'BelongsTo',
+  HasMany = 'HasMany',
+  HasOne = 'HasOne',
+}
+
+export interface DependencyMap {
+  [key: string]: { [key: string]: boolean };
+}
