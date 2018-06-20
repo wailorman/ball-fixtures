@@ -60,12 +60,14 @@ export enum AssociationTypes {
   HasMany = 'HasMany',
   HasOne = 'HasOne',
 }
+
 export interface GetDependencyMapArgs {
   db: any;
-  associationType?: AssociationTypes;
+  associationType?: AssociationTypes | AssociationTypes[];
 }
 export function getDependencyMap(args: GetDependencyMapArgs): DependencyMap {
-  const { db, associationType = AssociationTypes.BelongsTo } = args;
+  const { db, associationType = [AssociationTypes.BelongsTo] } = args;
+  const associationTypeMap = arrayToMap([].concat(associationType));
   return Object.keys(db).reduce((prev: DependencyMap, modelName: string) => {
     const model = db[modelName];
     const modelAssociations = model.associations;
@@ -74,8 +76,8 @@ export function getDependencyMap(args: GetDependencyMapArgs): DependencyMap {
 
     const belongsToAssociations = Object.keys(modelAssociations)
       .filter(associationName => {
-        const associationType = modelAssociations[associationName].associationType;
-        return associationType === associationType;
+        const sequelizeAssociationType: string = modelAssociations[associationName].associationType;
+        return sequelizeAssociationType in associationTypeMap;
       })
       .map(associationName => {
         const association = modelAssociations[associationName];

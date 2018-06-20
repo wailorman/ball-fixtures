@@ -4,6 +4,7 @@ import {
   getDependencyMap,
   modelDependencySort,
   AssociationTypes,
+  AssociationTypes as AT,
   deserializeConstraint,
   serializeConstraint,
   getForeignConstraints,
@@ -23,20 +24,51 @@ describe(`Dependency tree`, () => {
   beforeEach(syncDb);
 
   describe(`#getDependencyMap`, () => {
-    it(`should generate associations list`, async () => {
-      const res = getDependencyMap({ db });
+    it(`BelongsTo`, async () => {
+      const res = getDependencyMap({ db, associationType: AT.BelongsTo });
 
       assert.deepInclude(res, {
         UserInfo: { User: true },
       });
     });
 
-    it(`should generate HasOne associations list`, async () => {
-      const res = getDependencyMap({ db, associationType: AssociationTypes.HasOne });
+    it(`HasOne`, async () => {
+      const res = getDependencyMap({ db, associationType: AT.HasOne });
 
       assert.deepInclude(res, {
-        User: { UserInfo: true, Post: true },
+        User: { UserInfo: true },
       });
+    });
+
+    it(`HasMany`, async () => {
+      const res = getDependencyMap({ db, associationType: AT.HasMany });
+
+      assert.deepInclude(res, {
+        User: { Post: true },
+      });
+    });
+
+    it(`self-linked enitites`, async () => {
+      const res = getDependencyMap({ db, associationType: AT.BelongsTo });
+
+      assert.deepInclude(res, {
+        SelfLinked: { SelfLinked: true },
+      });
+    });
+
+    it(`use multiple association types`, async () => {
+      const res = getDependencyMap({ db, associationType: [AT.HasOne, AT.HasMany] });
+
+      assert.deepInclude(res, {
+        User: { Post: true, UserInfo: true },
+      });
+    });
+
+    it(`BelongsTo by default`, async () => {
+      const res1 = getDependencyMap({ db });
+      const res2 = getDependencyMap({ db, associationType: AT.BelongsTo });
+
+      assert.deepEqual(res1, res2);
     });
   });
 
