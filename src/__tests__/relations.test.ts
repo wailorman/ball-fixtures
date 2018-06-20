@@ -13,6 +13,7 @@ import {
   PgConstraint,
   DependencyNode,
   splitToDependencyGroups,
+  sortFixtures,
 } from '../relations';
 import { AssociationType as AT, DependencyMap } from '../types';
 
@@ -271,6 +272,58 @@ describe(`Dependency tree`, () => {
           ['Post', 'UserInfo'].sort(),
         ].sort(),
       );
+    });
+  });
+
+  describe(`#sortFixtures`, () => {
+    it(`should keep non-self-linked entity`, async () => {
+      const dependencyMap = getDependencyMap({ db });
+      const modelName = 'User';
+      const values = [{ name: '123' }, { name: '345' }];
+
+      const res = sortFixtures({ dependencyMap, db, modelName, values });
+
+      assert.deepEqual(res, values);
+    });
+
+    it(`should sort self-linked entity`, async () => {
+      const dependencyMap = getDependencyMap({ db });
+      const modelName = 'SelfLinked';
+      const values = [
+        {
+          id: 1,
+          name: '1',
+          selfLinkedId: 2,
+        },
+        {
+          id: 2,
+          name: '2',
+        },
+        {
+          id: 3,
+          name: '3',
+          selfLinkedId: 5,
+        },
+      ];
+
+      const res = sortFixtures({ dependencyMap, db, modelName, values });
+
+      assert.deepEqual(res, [
+        {
+          id: 2,
+          name: '2',
+        },
+        {
+          id: 3,
+          name: '3',
+          selfLinkedId: 5,
+        },
+        {
+          id: 1,
+          name: '1',
+          selfLinkedId: 2,
+        },
+      ]);
     });
   });
 });

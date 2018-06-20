@@ -1,6 +1,6 @@
 import { arrayToMap } from './utils';
 import { AssociationType as AT, DependencyMap, Fixtures } from './types';
-import { merge } from 'lodash';
+import { merge, pick, uniq } from 'lodash';
 
 export type DependencyNode = string | number;
 export interface DetectCircularDependencyArgs {
@@ -247,4 +247,38 @@ export function splitToDependencyGroups(args: {
 
     return prev;
   }, []);
+}
+
+export function sortFixtures(args: {
+  modelName: string;
+  values: object[];
+  dependencyMap: DependencyMap;
+  db: any;
+}): object[] {
+  const { modelName, values, dependencyMap, db } = args;
+  const isSelfLinked = modelName in (dependencyMap[modelName] || {});
+  const selfForeignAttrs = uniq(
+    Object.keys(db[modelName].associations)
+      .map(associationName => db[modelName].associations[associationName])
+      .filter(({ source }) => source.name === modelName)
+      .map(association => association.foreignKey),
+  );
+
+  const isHaveDefinedAttrs = (object: object = {}, attrs: string[] = []): boolean => {
+    return attrs.reduce((prev, curAttr) => {
+      if (prev) return prev;
+      if (object[curAttr]) return true;
+      return prev;
+    }, false);
+  };
+
+  if (isSelfLinked) {
+    return values.sort((a, b) => {
+      if (isHaveDefinedAttrs(a, selfForeignAttrs)) return 1;
+      if (isHaveDefinedAttrs(b, selfForeignAttrs)) return -1;
+      return 0;
+    });
+  }
+
+  return values;
 }
