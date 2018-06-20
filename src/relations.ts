@@ -53,11 +53,10 @@ export function detectCircularDependency(args: DetectCircularDependencyArgs): vo
   });
 }
 
-export interface GetDependencyMapArgs {
+export function getDependencyMap(args: {
   db: any;
   associationType?: AssociationType | AssociationType[];
-}
-export function getDependencyMap(args: GetDependencyMapArgs): DependencyMap {
+}): DependencyMap {
   const { db, associationType = [AssociationType.BelongsTo] } = args;
   const associationTypeMap = arrayToMap([].concat(associationType));
   return Object.keys(db).reduce((prev: DependencyMap, modelName: string) => {
@@ -83,12 +82,10 @@ export function getDependencyMap(args: GetDependencyMapArgs): DependencyMap {
   }, {});
 }
 
-export interface ModelDependencySortArgs {
+export function modelDependencySort(args: {
   dependencyMap: DependencyMap;
   modelNames: string[];
-}
-
-export function modelDependencySort(args: ModelDependencySortArgs): string[] {
+}): string[] {
   const { dependencyMap, modelNames } = args;
   return modelNames.sort((modelA, modelB) => {
     const modelADeps = dependencyMap[modelA] || {};
