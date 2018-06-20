@@ -238,7 +238,7 @@ describe(`Dependency tree`, () => {
 
       // prettier-ignore
       assert.deepEqual(
-        res.sort(),
+        res.sort().map((el) => el.sort()),
         [
           ['Orphan'].sort(),
           ['SelfLinked'].sort(),
