@@ -31,6 +31,14 @@ describe(`Dependency tree`, () => {
       });
     });
 
+    it(`BelongsTo (BelongsToMany)`, async () => {
+      const res = getDependencyMap({ db });
+
+      assert.deepInclude(res, {
+        TagPost: { Post: true, Tag: true },
+      });
+    });
+
     it(`HasOne`, async () => {
       const res = getDependencyMap({ db, associationType: AT.HasOne });
 
@@ -44,6 +52,15 @@ describe(`Dependency tree`, () => {
 
       assert.deepInclude(res, {
         User: { Post: true },
+      });
+    });
+
+    it(`HasMany (BelongsToMany)`, async () => {
+      const res = getDependencyMap({ db, associationType: AT.HasMany });
+
+      assert.deepInclude(res, {
+        Post: { TagPost: true },
+        Tag: { TagPost: true },
       });
     });
 
@@ -68,6 +85,15 @@ describe(`Dependency tree`, () => {
       const res2 = getDependencyMap({ db, associationType: AT.BelongsTo });
 
       assert.deepEqual(res1, res2);
+    });
+
+    it(`BelongsToMany`, async () => {
+      const res = getDependencyMap({ db, associationType: AT.BelongsToMany });
+
+      assert.deepInclude(res, {
+        Post: { Tag: true },
+        Tag: { Post: true },
+      });
     });
   });
 

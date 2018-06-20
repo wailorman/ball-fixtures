@@ -9,6 +9,7 @@ export interface Fixtures {
 
 export enum AssociationType {
   BelongsTo = 'BelongsTo',
+  BelongsToMany = 'BelongsToMany',
   HasMany = 'HasMany',
   HasOne = 'HasOne',
 }

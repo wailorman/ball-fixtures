@@ -1,5 +1,6 @@
 import { arrayToMap } from './utils';
-import { AssociationType, DependencyMap } from './types';
+import { AssociationType as AT, DependencyMap, Fixtures } from './types';
+import { merge } from 'lodash';
 
 export type DependencyNode = string | number;
 export interface DetectCircularDependencyArgs {
@@ -53,32 +54,69 @@ export function detectCircularDependency(args: DetectCircularDependencyArgs): vo
   });
 }
 
-export function getDependencyMap(args: {
-  db: any;
-  associationType?: AssociationType | AssociationType[];
-}): DependencyMap {
-  const { db, associationType = [AssociationType.BelongsTo] } = args;
+export function getDependencyMap(args: { db: any; associationType?: AT | AT[] }): DependencyMap {
+  const { db, associationType = [AT.BelongsTo] } = args;
   const associationTypeMap = arrayToMap([].concat(associationType));
+
   return Object.keys(db).reduce((prev: DependencyMap, modelName: string) => {
     const model = db[modelName];
 
     const modelAssociations = model && model.associations;
     if (!modelAssociations) return prev;
 
-    const belongsToAssociations = Object.keys(modelAssociations)
+    const basicAssociations = Object.keys(modelAssociations)
       .filter(associationName => {
-        const sequelizeAssociationType: string = modelAssociations[associationName].associationType;
-        return sequelizeAssociationType in associationTypeMap;
+        const sequelizeAT: string = modelAssociations[associationName].associationType;
+        return sequelizeAT in associationTypeMap;
       })
       .map(associationName => {
         const association = modelAssociations[associationName];
         const targetModelName = association.target.options.name.singular;
         return targetModelName;
       });
-    return {
-      ...prev,
-      [modelName]: arrayToMap(belongsToAssociations) || {},
-    };
+
+    const belongsToManyAssociations = Object.keys(modelAssociations)
+      .filter(associationName => {
+        return modelAssociations[associationName].associationType === AT.BelongsToMany;
+      })
+      .reduce((prev, associationName) => {
+        const association = modelAssociations[associationName];
+
+        const throughModelName = association.through.model.name;
+        const targetModelName = association.target.name;
+        const sourceModelName = association.source.name;
+
+        const needBelongsTo = AT.BelongsTo in associationTypeMap;
+        const needHasMany = AT.HasMany in associationTypeMap;
+
+        const belongsToDeps = {
+          [throughModelName]: {
+            [targetModelName]: true,
+            [sourceModelName]: true,
+          },
+        };
+
+        const hasManyDeps = {
+          [sourceModelName]: {
+            [throughModelName]: true,
+          },
+          [targetModelName]: {
+            [throughModelName]: true,
+          },
+        };
+
+        return merge(
+          prev,
+          { ...(needBelongsTo ? belongsToDeps : {}) },
+          { ...(needHasMany ? hasManyDeps : {}) },
+        );
+      }, {});
+
+    return merge(
+      prev,
+      { [modelName]: arrayToMap(basicAssociations) || {} },
+      { ...belongsToManyAssociations },
+    );
   }, {});
 }
 
