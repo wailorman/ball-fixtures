@@ -12,6 +12,7 @@ import {
   getAllRelatedNodesFor,
   PgConstraint,
   DependencyNode,
+  splitToDependencyGroups,
 } from '../relations';
 import { AssociationType as AT, DependencyMap } from '../types';
 
@@ -198,6 +199,52 @@ describe(`Dependency tree`, () => {
       const res: DependencyNode[] = getAllRelatedNodesFor('User', depMap);
 
       assert.deepEqual(res.sort(), ['Post', 'Comment'].sort());
+    });
+  });
+
+  describe(`#splitToDependencyGroups`, () => {
+    it(`should split all models to tied groups`, async () => {
+      const dependencyMap = getDependencyMap({
+        db,
+        associationType: [AT.BelongsTo, AT.HasMany, AT.HasOne],
+      });
+
+      const res = splitToDependencyGroups({
+        dependencyMap,
+        modelNames: ['Orphan', 'SelfLinked', 'Post', 'User', 'UserInfo'],
+      });
+
+      // prettier-ignore
+      assert.deepEqual(
+        res.sort(),
+        [
+          ['Orphan'].sort(),
+          ['SelfLinked'].sort(),
+          ['Post', 'User', 'UserInfo'].sort(),
+        ].sort(),
+      );
+    });
+
+    it(`should split couple of models to tied groups`, async () => {
+      const dependencyMap = getDependencyMap({
+        db,
+        associationType: [AT.BelongsTo, AT.HasMany, AT.HasOne],
+      });
+
+      const res = splitToDependencyGroups({
+        dependencyMap,
+        modelNames: ['Orphan', 'SelfLinked', 'Post', 'UserInfo'],
+      });
+
+      // prettier-ignore
+      assert.deepEqual(
+        res.sort(),
+        [
+          ['Orphan'].sort(),
+          ['SelfLinked'].sort(),
+          ['Post', 'UserInfo'].sort(),
+        ].sort(),
+      );
     });
   });
 });

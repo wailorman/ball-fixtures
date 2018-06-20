@@ -169,7 +169,7 @@ export function getAllRelatedNodesFor(
   node: DependencyNode,
   dependencyMap: DependencyMap,
   visitedNodes?: DependencyNode[],
-) {
+): string[] {
   const visitedNodesMap = {
     ...arrayToMap(visitedNodes || []),
     [node]: true,
@@ -187,4 +187,29 @@ export function getAllRelatedNodesFor(
       };
     }, {}),
   ).filter(n => n !== node);
+}
+
+export function splitToDependencyGroups(args: {
+  modelNames?: string[];
+  dependencyMap?: DependencyMap;
+}): string[][] {
+  const { modelNames = [], dependencyMap = {} } = args;
+  let visitedModelNamesMap = {};
+  const modelNamesMap = arrayToMap(modelNames);
+
+  return modelNames.reduce((prev, modelName) => {
+    if (!(modelName in visitedModelNamesMap)) {
+      const relatedModels = getAllRelatedNodesFor(modelName, dependencyMap);
+      const filteredRelatedModels = relatedModels.filter(modelName => modelName in modelNamesMap);
+      visitedModelNamesMap = {
+        ...visitedModelNamesMap,
+        ...arrayToMap(relatedModels),
+        [modelName]: true,
+      };
+
+      prev.push([modelName, ...filteredRelatedModels]);
+    }
+
+    return prev;
+  }, []);
 }
