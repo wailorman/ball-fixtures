@@ -125,7 +125,7 @@ export function modelDependencySort(args: {
   modelNames: string[];
 }): string[] {
   const { dependencyMap, modelNames } = args;
-  return modelNames.sort((modelA, modelB) => {
+  return modelNames.slice().sort((modelA, modelB) => {
     const modelADeps = dependencyMap[modelA] || {};
     const modelBDeps = dependencyMap[modelB] || {};
 
@@ -273,7 +273,7 @@ export function sortFixtures(args: {
   };
 
   if (isSelfLinked) {
-    return values.sort((a, b) => {
+    return values.slice().sort((a, b) => {
       if (isHaveDefinedAttrs(a, selfForeignAttrs)) return 1;
       if (isHaveDefinedAttrs(b, selfForeignAttrs)) return -1;
       return 0;

@@ -225,7 +225,7 @@ describe(`Dependency tree`, () => {
 
       const res: DependencyNode[] = getAllRelatedNodesFor('User', depMap);
 
-      assert.deepEqual(res.sort(), ['Post', 'Comment'].sort());
+      assert.deepEqual(res.slice().sort(), ['Post', 'Comment'].sort());
     });
   });
 
@@ -264,7 +264,7 @@ describe(`Dependency tree`, () => {
 
       // prettier-ignore
       assert.deepEqual(
-        res.sort().map((el) => el.sort()),
+        res.slice().sort().map((el) => el.slice().sort()),
         [
           ['Orphan'].sort(),
           ['SelfLinked'].sort(),
