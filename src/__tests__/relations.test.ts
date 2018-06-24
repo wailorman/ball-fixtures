@@ -238,16 +238,15 @@ describe(`Dependency tree`, () => {
 
       const res = splitToDependencyGroups({
         dependencyMap,
-        modelNames: ['Orphan', 'SelfLinked', 'Post', 'User', 'UserInfo'],
+        modelNames: ['Orphan', 'SelfLinked', 'Post', 'TagPost', 'Tag', 'User', 'UserInfo'],
       });
 
-      // prettier-ignore
       assert.deepEqual(
-        res.sort(),
+        res.slice().sort().map((el) => el.slice().sort()),
         [
           ['Orphan'].sort(),
           ['SelfLinked'].sort(),
-          ['Post', 'User', 'UserInfo'].sort(),
+          ['Post', 'TagPost', 'Tag', 'User', 'UserInfo'].sort(),
         ].sort(),
       );
     });
