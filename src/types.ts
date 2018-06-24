@@ -21,6 +21,7 @@ export interface DependencyMap {
 export enum TaskType {
   CREATE = 'CREATE',
   TRUNCATE = 'TRUNCATE',
+  BULK_CREATE = 'BULK_CREATE',
 }
 
 export interface TaskBase {
@@ -34,6 +35,11 @@ export interface CreateTask extends TaskBase {
 
 export interface TruncateTask extends TaskBase {
   modelName: string;
+}
+
+export interface BulkCreateTask extends TaskBase {
+  modelName: string;
+  values: object[];
 }
 
 export type TasksArray = (CreateTask | TruncateTask)[];
