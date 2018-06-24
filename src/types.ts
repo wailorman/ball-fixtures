@@ -17,3 +17,23 @@ export enum AssociationType {
 export interface DependencyMap {
   [key: string]: { [key: string]: boolean };
 }
+
+export enum TaskType {
+  CREATE = 'CREATE',
+  TRUNCATE = 'TRUNCATE',
+}
+
+export interface TaskBase {
+  type: TaskType;
+}
+
+export interface CreateTask extends TaskBase {
+  modelName: string;
+  values: object;
+}
+
+export interface TruncateTask extends TaskBase {
+  modelName: string;
+}
+
+export type TasksArray = (CreateTask | TruncateTask)[];
