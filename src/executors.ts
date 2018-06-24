@@ -1,6 +1,8 @@
-import { TaskType, CreateTask, TruncateTask, BulkCreateTask } from './types';
+import Bluebird from 'bluebird';
 
-export async function create(task: CreateTask, db: any): Promise<void> {
+import { Task, TaskType, SequelizeInstance } from './types';
+
+export async function create(task: Task, db: SequelizeInstance) {
   const { modelName, values } = task;
   const model = db[modelName];
 
@@ -11,7 +13,7 @@ export async function create(task: CreateTask, db: any): Promise<void> {
   await model.create(values);
 }
 
-export async function truncate(task: TruncateTask, db: any): Promise<void> {
+export async function truncate(task: Task, db: SequelizeInstance) {
   const { modelName } = task;
   const model = db[modelName];
 
@@ -22,7 +24,7 @@ export async function truncate(task: TruncateTask, db: any): Promise<void> {
   await model.truncate({ cascade: true });
 }
 
-export async function bulkCreate(task: BulkCreateTask, db: any): Promise<void> {
+export async function bulkCreate(task: Task, db: SequelizeInstance) {
   const { modelName, values } = task;
   const model = db[modelName];
 
@@ -30,5 +32,6 @@ export async function bulkCreate(task: BulkCreateTask, db: any): Promise<void> {
     throw new Error(`Model '${modelName}' not found in sequelize.`);
   }
 
-  await model.bulkCreate(values);
+  await model.bulkCreate([].concat(values));
+}
 }

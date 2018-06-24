@@ -1,3 +1,5 @@
+import { Model, Instance } from 'sequelize';
+
 export interface Config {
   /** Sequelize instance */
   db: any;
@@ -24,22 +26,12 @@ export enum TaskType {
   BULK_CREATE = 'BULK_CREATE',
 }
 
-export interface TaskBase {
+export interface Task {
   type: TaskType;
+  modelName?: string;
+  values?: Object | Object[];
+  tasks?: Task[];
 }
 
-export interface CreateTask extends TaskBase {
-  modelName: string;
-  values: object;
-}
-
-export interface TruncateTask extends TaskBase {
-  modelName: string;
-}
-
-export interface BulkCreateTask extends TaskBase {
-  modelName: string;
-  values: object[];
-}
-
-export type TasksArray = (CreateTask | TruncateTask)[];
+export type SequelizeModel = Model<Instance<Object>, Object>;
+export type SequelizeInstance = { [key: string]: SequelizeModel };
