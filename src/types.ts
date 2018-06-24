@@ -24,6 +24,8 @@ export enum TaskType {
   CREATE = 'CREATE',
   TRUNCATE = 'TRUNCATE',
   BULK_CREATE = 'BULK_CREATE',
+  SERIAL_TASK = 'SERIAL_TASK',
+  PARALLEL_TASK = 'PARALLEL_TASK',
 }
 
 export interface Task {
