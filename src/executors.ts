@@ -36,12 +36,12 @@ export async function bulkCreate(task: Task, db: SequelizeInstance) {
 }
 
 export async function serial(task: Task, db: SequelizeInstance) {
-  const { tasks } = task;
+  const { tasks = [] } = task;
   await Bluebird.each(tasks, task => router(task, db));
 }
 
 export async function parallel(task: Task, db: SequelizeInstance) {
-  const { tasks } = task;
+  const { tasks = [] } = task;
   await Bluebird.map(tasks, task => router(task, db));
 }
 
