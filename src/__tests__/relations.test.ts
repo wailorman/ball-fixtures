@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import db from '../../models';
 import {
   getDependencyMap,
   modelDependencySort,
@@ -16,6 +15,8 @@ import {
   sortFixtures,
 } from '../relations';
 import { AssociationType as AT, DependencyMap } from '../types';
+
+const db = require('../../models');
 
 describe(`Dependency tree`, () => {
   const syncDb = () => db.sequelize.sync({ force: true });
