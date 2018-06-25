@@ -77,6 +77,8 @@ const ballFixturesFactory = (conf: Config) => {
     await db.sequelize.query(`TRUNCATE TABLE "${model.getTableName()}" CASCADE;`, {
       type: db.sequelize.QueryTypes.SELECT,
     });
+
+    await resetAutoIncrement(model);
   }
 
   async function create(fixtures: Fixtures): Promise<void> {
