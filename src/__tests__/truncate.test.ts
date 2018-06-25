@@ -1,7 +1,6 @@
 import { assert } from 'chai';
-
-import db from '../../models';
 import ballFixturesFactory from '../index';
+const db = require('../../models');
 
 const ballFixtures = ballFixturesFactory({ db });
 
