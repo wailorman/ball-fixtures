@@ -171,10 +171,10 @@ export async function getForeignConstraints(db: any): Promise<PgConstraint[]> {
     type: db.sequelize.QueryTypes.SELECT,
   });
 
-  return con.map(conRow => deserializeConstraint(conRow));
+  return con.map((conRow: any) => deserializeConstraint(conRow));
 }
 
-export function deserializeConstraint(row): PgConstraint {
+export function deserializeConstraint(row: any): PgConstraint {
   return {
     table: row.table.slice(1, -1),
     name: row.name,
