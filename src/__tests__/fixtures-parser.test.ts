@@ -1,9 +1,9 @@
 import chai from 'chai';
 import { map, findIndex, findLastIndex } from 'lodash';
-import db from '../../models';
 import { parseFixtures } from '../fixtures-parser';
-import { Fixtures, TaskType, Task } from '../types';
+import { Fixtures, TaskType } from '../types';
 
+const db = require('../../models');
 const { assert } = chai;
 
 describe(`Fixtures parser`, () => {
@@ -77,12 +77,12 @@ describe(`Fixtures parser`, () => {
       const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
       assert.lengthOf(parallelTasks, 1, 'parallelTasks');
 
-      const serialTasks = parallelTasks[0].tasks.filter(
+      const serialTasks = (parallelTasks[0].tasks || []).filter(
         ({ type }) => type === TaskType.SERIAL_TASK,
       );
       assert.lengthOf(serialTasks, 1, 'serialTasks');
 
-      const bulkCreateTasks = serialTasks[0].tasks.filter(
+      const bulkCreateTasks = (serialTasks[0].tasks || []).filter(
         ({ type }) => type === TaskType.BULK_CREATE,
       );
       assert.lengthOf(bulkCreateTasks, 1, 'bulkCreate');
@@ -92,7 +92,10 @@ describe(`Fixtures parser`, () => {
       assert.equal(singleBulkCreateTask.modelName, 'Orphan');
       assert.isArray(singleBulkCreateTask.values);
       assert.deepEqual(
-        [].concat(singleBulkCreateTask.values).sort(),
+        ([] as any[])
+          .concat(singleBulkCreateTask.values)
+          .slice()
+          .sort(),
         fixtures.Orphan.slice().sort(),
       );
     });
@@ -118,7 +121,7 @@ describe(`Fixtures parser`, () => {
       const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
       assert.lengthOf(parallelTasks, 1, 'parallelTasks');
 
-      const serialTasks = parallelTasks[0].tasks.filter(
+      const serialTasks = (parallelTasks[0].tasks || []).filter(
         ({ type }) => type === TaskType.SERIAL_TASK,
       );
       assert.lengthOf(serialTasks, 3, 'serialTasks');
@@ -126,7 +129,7 @@ describe(`Fixtures parser`, () => {
       // -----------------
 
       const orphanSerialTask = serialTasks.find(
-        ({ tasks }) => !!tasks.find(({ modelName }) => modelName === 'Orphan'),
+        ({ tasks }) => !!(tasks || []).find(({ modelName }) => modelName === 'Orphan'),
       );
 
       assert.isDefined(orphanSerialTask, `Orphan's serial task`);
@@ -134,7 +137,7 @@ describe(`Fixtures parser`, () => {
       // -----------------
 
       const selfLinkedSerialTask = serialTasks.find(
-        ({ tasks }) => !!tasks.find(({ modelName }) => modelName === 'SelfLinked'),
+        ({ tasks }) => !!(tasks || []).find(({ modelName }) => modelName === 'SelfLinked'),
       );
 
       assert.isDefined(selfLinkedSerialTask, `SelfLinked's serial task`);
@@ -142,7 +145,7 @@ describe(`Fixtures parser`, () => {
       // -----------------
 
       const userSerialTask = serialTasks.find(
-        ({ tasks }) => !!tasks.find(({ modelName }) => modelName === 'User'),
+        ({ tasks }) => !!(tasks || []).find(({ modelName }) => modelName === 'User'),
       );
 
       assert.isDefined(userSerialTask, `User's serial task`);
@@ -164,14 +167,14 @@ describe(`Fixtures parser`, () => {
       const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
       assert.lengthOf(parallelTasks, 1, 'parallelTasks');
 
-      const serialTasks = parallelTasks[0].tasks.filter(
+      const serialTasks = (parallelTasks[0].tasks || []).filter(
         ({ type }) => type === TaskType.SERIAL_TASK,
       );
       assert.lengthOf(serialTasks, 1, 'serialTasks');
 
-      const [bulkCreateTask] = serialTasks[0].tasks;
+      const [bulkCreateTask = null] = serialTasks[0].tasks || [];
 
-      assert.deepEqual(bulkCreateTask.values, [
+      assert.deepEqual(bulkCreateTask && bulkCreateTask.values, [
         { name: 'Bob' },
         { name: 'Alice' },
         { name: 'Jack' },
@@ -196,14 +199,14 @@ describe(`Fixtures parser`, () => {
       const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
       assert.lengthOf(parallelTasks, 1, 'parallelTasks');
 
-      const serialTasks = parallelTasks[0].tasks.filter(
+      const serialTasks = (parallelTasks[0].tasks || []).filter(
         ({ type }) => type === TaskType.SERIAL_TASK,
       );
       assert.lengthOf(serialTasks, 1, 'serialTasks');
 
-      const [bulkCreateTask] = serialTasks[0].tasks;
+      const [bulkCreateTask = null] = serialTasks[0].tasks || [];
 
-      assert.deepEqual(bulkCreateTask.values, [
+      assert.deepEqual(bulkCreateTask && bulkCreateTask.values, [
         { id: 1 },
         { id: 3 },
         { id: 5 },
