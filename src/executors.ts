@@ -25,14 +25,14 @@ export async function truncate(task: Task, db: SequelizeInstance) {
 }
 
 export async function bulkCreate(task: Task, db: SequelizeInstance) {
-  const { modelName, values } = task;
+  const { modelName = '', values = {} } = task;
   const model = db[modelName];
 
   if (!model) {
     throw new Error(`Model '${modelName}' not found in sequelize.`);
   }
 
-  await model.bulkCreate([].concat(values));
+  await model.bulkCreate(([] as any[]).concat(values));
 }
 
 export async function serial(task: Task, db: SequelizeInstance) {
