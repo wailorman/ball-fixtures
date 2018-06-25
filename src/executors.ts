@@ -3,7 +3,7 @@ import Bluebird from 'bluebird';
 import { Task, TaskType, SequelizeInstance } from './types';
 
 export async function create(task: Task, db: SequelizeInstance) {
-  const { modelName, values } = task;
+  const { modelName = '', values } = task;
   const model = db[modelName];
 
   if (!model) {
@@ -14,7 +14,7 @@ export async function create(task: Task, db: SequelizeInstance) {
 }
 
 export async function truncate(task: Task, db: SequelizeInstance) {
-  const { modelName } = task;
+  const { modelName = '' } = task;
   const model = db[modelName];
 
   if (!model) {
