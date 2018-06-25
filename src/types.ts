@@ -2,7 +2,7 @@ import { Model, Instance } from 'sequelize';
 
 export interface Config {
   /** Sequelize instance */
-  db: any;
+  db: SequelizeInstance;
 }
 
 export interface Fixtures {
