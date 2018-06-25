@@ -2,7 +2,7 @@ import { pad } from 'lodash';
 
 import { Fixtures } from './types';
 
-export function generateUUID(...args: string[]): string {
+export function generateUUID(...args: (string | number)[]): string {
   // 5095072f-5308-40a5-b994-e9b05230a4dd
   //       8|  13|  18|  23|          36|
 
