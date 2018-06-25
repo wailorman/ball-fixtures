@@ -40,7 +40,7 @@
   "scripts": {
     "prepublish": "tsc",
     "test-debug": "node --inspect ./node_modules/.bin/jest --runInBand ",
-    "test": "node ./node_modules/.bin/jest --bail --expand -i --runInBand "
+    "test": "node ./node_modules/.bin/jest --bail --expand -i --runInBand --forceExit"
   },
   "jest": {
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec|unit|int))\\.(jsx?|tsx?)$",
