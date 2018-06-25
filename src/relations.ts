@@ -1,5 +1,5 @@
 import { arrayToMap } from './utils';
-import { AssociationType as AT, DependencyMap, Fixtures } from './types';
+import { AssociationType as AT, DependencyMap } from './types';
 import { merge, pick, uniq } from 'lodash';
 
 export type DependencyNode = string | number;
@@ -56,7 +56,7 @@ export function detectCircularDependency(args: DetectCircularDependencyArgs): vo
 
 export function getDependencyMap(args: { db: any; associationType?: AT | AT[] }): DependencyMap {
   const { db, associationType = [AT.BelongsTo] } = args;
-  const associationTypeMap = arrayToMap([].concat(associationType));
+  const associationTypeMap = arrayToMap(([] as AT[]).concat(associationType));
 
   return Object.keys(db).reduce((prev: DependencyMap, modelName: string) => {
     const model = db[modelName];
@@ -242,7 +242,7 @@ export function splitToDependencyGroups(args: {
         [modelName]: true,
       };
 
-      prev.push([modelName, ...filteredRelatedModels]);
+      (prev as any[]).push([modelName, ...filteredRelatedModels]);
     }
 
     return prev;
@@ -264,7 +264,7 @@ export function sortFixtures(args: {
       .map(association => association.foreignKey),
   );
 
-  const isHaveDefinedAttrs = (object: object = {}, attrs: string[] = []): boolean => {
+  const isHaveDefinedAttrs = (object: any = {}, attrs: string[] = []): boolean => {
     return attrs.reduce((prev, curAttr) => {
       if (prev) return prev;
       if (object[curAttr]) return true;
