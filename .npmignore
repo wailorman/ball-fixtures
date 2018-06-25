@@ -1,5 +1,7 @@
 node_modules/
-docker-compose.yml
+yarn-error.log
+
+.vscode/
 config/config.json
 migrations/
 models/
@@ -9,8 +11,12 @@ src/
 scripts/
 lib/__tests__
 
-yarn-error.log
 .editorconfig
+.eslintrc
+.gitignore
 .prettierignore
+docker-compose.yml
+LICENSE
+README.md
 tsconfig.json
 tslint.json
