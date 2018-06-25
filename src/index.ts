@@ -55,12 +55,12 @@ const ballFixturesFactory = (conf: Config) => {
 
     const resetAutoIncrementQuery = `ALTER SEQUENCE "${tableName}_id_seq" RESTART WITH ${num};`;
     const query = (str: string) =>
-      db.sequelize.query(str, { type: db.sequelize.QueryTypes.SELECT });
+      (db as any).sequelize.query(str, { type: (db as any).sequelize.QueryTypes.SELECT });
     await query(resetAutoIncrementQuery);
   }
 
   async function truncateAll(): Promise<void> {
-    const modelNames = Object.keys(db.sequelize.models);
+    const modelNames = Object.keys((db as any).sequelize.models);
     const models = modelNames.map(modelName => db[modelName]);
 
     await Promise.all(models.map(truncateModel));
@@ -74,8 +74,8 @@ const ballFixturesFactory = (conf: Config) => {
   }
 
   async function truncateModel(model: any | any[]): Promise<void> {
-    await db.sequelize.query(`TRUNCATE TABLE "${model.getTableName()}" CASCADE;`, {
-      type: db.sequelize.QueryTypes.SELECT,
+    await (db as any).sequelize.query(`TRUNCATE TABLE "${model.getTableName()}" CASCADE;`, {
+      type: (db as any).sequelize.QueryTypes.SELECT,
     });
 
     await resetAutoIncrement(model);
@@ -87,7 +87,7 @@ const ballFixturesFactory = (conf: Config) => {
     await Promise.all(
       modelNames.map(modelName =>
         Promise.all(
-          fixtures[modelName].map(instanceData => {
+          fixtures[modelName].map(async instanceData => {
             const modelClass = db[modelName];
 
             if (instanceData.id) {
