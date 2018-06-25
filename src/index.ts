@@ -1,8 +1,5 @@
 import { Config, Fixtures } from './types';
-import {
-  mergeFixtures,
-  generateUUID,
-} from './utils';
+import { mergeFixtures, generateUUID } from './utils';
 import bluebird from 'bluebird';
 
 const ballFixturesFactory = (conf: Config) => {
@@ -57,7 +54,8 @@ const ballFixturesFactory = (conf: Config) => {
     }
 
     const resetAutoIncrementQuery = `ALTER SEQUENCE "${tableName}_id_seq" RESTART WITH ${num};`;
-    const query = str => db.sequelize.query(str, { type: db.sequelize.QueryTypes.SELECT });
+    const query = (str: string) =>
+      db.sequelize.query(str, { type: db.sequelize.QueryTypes.SELECT });
     await query(resetAutoIncrementQuery);
   }
 

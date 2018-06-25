@@ -2,7 +2,7 @@ import { pad } from 'lodash';
 
 import { Fixtures } from './types';
 
-export function generateUUID(...args): string {
+export function generateUUID(...args: string[]): string {
   // 5095072f-5308-40a5-b994-e9b05230a4dd
   //       8|  13|  18|  23|          36|
 
@@ -15,7 +15,7 @@ export function generateUUID(...args): string {
 
   const res: string[] = [];
 
-  const pushStrToRes = str => {
+  const pushStrToRes = (str: string) => {
     `${str}`
       .replace(/[^0-9a-f]/g, '0')
       .split('')
@@ -91,7 +91,7 @@ export interface ArrayToMapOpts {
 export function arrayToMap(array: any[], opts?: ArrayToMapOpts) {
   const { key = null } = opts || {};
 
-  return array.reduce((prev: object, cur: any | object) => {
+  return array.reduce((prev, cur: any | object) => {
     if (typeof cur === 'object' && key) {
       if (typeof key === 'function') {
         prev[key(cur)] = cur;
