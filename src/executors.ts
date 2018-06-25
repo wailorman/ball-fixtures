@@ -68,3 +68,7 @@ export async function router(task: Task, db: SequelizeInstance) {
       throw new Error('Unknown task type: ' + type);
   }
 }
+
+export async function executeTasks(tasks: Task[], db: SequelizeInstance) {
+  return Bluebird.each(tasks, task => router(task, db));
+}
