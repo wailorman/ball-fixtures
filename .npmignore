@@ -17,6 +17,5 @@ lib/__tests__
 .prettierignore
 docker-compose.yml
 LICENSE
-README.md
 tsconfig.json
 tslint.json
