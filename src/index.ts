@@ -1,6 +1,8 @@
+import bluebird from 'bluebird';
 import { Config, Fixtures } from './types';
 import { mergeFixtures, generateUUID } from './utils';
-import bluebird from 'bluebird';
+import { parseFixtures } from './fixtures-parser';
+import { executeTasks } from './executors';
 
 const ballFixturesFactory = (conf: Config) => {
   const { db } = conf;
@@ -11,9 +13,12 @@ const ballFixturesFactory = (conf: Config) => {
   }
 
   function jest(fixtures: Fixtures): void {
+    const tasks = parseFixtures({ fixtures, db });
+
     beforeEach(async () => {
-      await truncate(fixtures);
-      await create(fixtures);
+      // await truncate(fixtures);
+      // await create(fixtures);
+      await executeTasks(tasks, db);
     });
 
     afterAll(async () => {
@@ -78,7 +83,9 @@ const ballFixturesFactory = (conf: Config) => {
       type: (db as any).sequelize.QueryTypes.SELECT,
     });
 
-    await resetAutoIncrement(model);
+    await model.truncate({ cascade: true });
+
+    await resetAutoIncrement(model, 10000);
   }
 
   async function create(fixtures: Fixtures): Promise<void> {
