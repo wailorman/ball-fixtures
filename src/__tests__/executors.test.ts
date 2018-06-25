@@ -1,8 +1,8 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { create, truncate, bulkCreate } from '../executors';
-import { TaskType, CreateTask, TruncateTask, BulkCreateTask } from '../types';
-import db from '../../models';
+import { TaskType, Task } from '../types';
+const db = require('../../models');
 
 chai.use(chaiAsPromised);
 const { assert } = chai;
@@ -15,7 +15,7 @@ describe(`Executors`, () => {
 
   describe(`#create`, () => {
     it(`should throw error if no such model`, async () => {
-      const task: CreateTask = {
+      const task: Task = {
         type: TaskType.CREATE,
         modelName: 'NonExistentModel',
         values: { id: 1, name: '2' },
@@ -27,7 +27,7 @@ describe(`Executors`, () => {
     it(`should create row`, async () => {
       await db.User.truncate({ cascade: true });
 
-      const task: CreateTask = {
+      const task: Task = {
         type: TaskType.CREATE,
         modelName: 'User',
         values: { name: 'Bob' },
@@ -49,7 +49,7 @@ describe(`Executors`, () => {
 
   describe(`#truncate`, () => {
     it(`should throw error if no such model`, async () => {
-      const task: TruncateTask = {
+      const task: Task = {
         type: TaskType.TRUNCATE,
         modelName: 'NonExistentModel',
       };
@@ -63,7 +63,7 @@ describe(`Executors`, () => {
       const usersBefore = await db.User.findAll();
       assert.lengthOf(usersBefore, 2);
 
-      const task: TruncateTask = {
+      const task: Task = {
         type: TaskType.TRUNCATE,
         modelName: 'User',
       };
@@ -78,7 +78,7 @@ describe(`Executors`, () => {
 
   describe(`#bulkCreate`, () => {
     it(`should throw error if no such model`, async () => {
-      const task: BulkCreateTask = {
+      const task: Task = {
         type: TaskType.BULK_CREATE,
         modelName: 'NonExistentModel',
         values: [{ name: 'Bob' }],
@@ -92,7 +92,7 @@ describe(`Executors`, () => {
       const usersBefore = await db.User.findAll();
       assert.lengthOf(usersBefore, 0, 'usersBefore');
 
-      const task: BulkCreateTask = {
+      const task: Task = {
         type: TaskType.BULK_CREATE,
         modelName: 'User',
         values: [{ name: 'Bob' }, { name: 'Alice' }],
