@@ -38,7 +38,7 @@
   },
   "peerDependencies": {},
   "scripts": {
-    "prepublish": "tsc",
+    "prepublish": "./node_modules/.bin/tsc",
     "test-debug": "node --inspect ./node_modules/.bin/jest --runInBand ",
     "test": "node ./node_modules/.bin/jest --bail --expand -i --runInBand --forceExit"
   },
