@@ -1,0 +1,17 @@
+sudo: false
+language: node_js
+node_js:
+  - 8
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+cache:
+  directories:
+  - node_modules
+  - "$HOME/.npm"
+install:
+  - npm i -g npm@5.7.1 # this should be deleted once 5.7.X is out of "pre-release"
+  - npm ci             # instead of default npm install
+scripts:
+  - npm run test
