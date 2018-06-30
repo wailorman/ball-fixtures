@@ -1,6 +1,6 @@
 import chai from 'chai';
 import { map, findIndex, findLastIndex } from 'lodash';
-import { parseFixtures } from '../fixtures-parser';
+import { createFixtures, truncateFixtures } from '../fixtures-parser';
 import { Fixtures, TaskType } from '../types';
 
 const db = require('../../models');
@@ -22,7 +22,7 @@ describe(`Fixtures parser`, () => {
         ],
       };
 
-      const tasks = parseFixtures({ fixtures, db });
+      const tasks = truncateFixtures({ fixtures, db });
 
       const truncateTasks = tasks.filter(({ type }) => type === TaskType.TRUNCATE);
 
@@ -47,7 +47,7 @@ describe(`Fixtures parser`, () => {
         ],
       };
 
-      const tasks = parseFixtures({ fixtures, db });
+      const tasks = truncateFixtures({ fixtures, db });
 
       const truncateTasks = tasks.filter(({ type }) => type === TaskType.TRUNCATE);
 
@@ -72,14 +72,9 @@ describe(`Fixtures parser`, () => {
         ],
       };
 
-      const tasks = parseFixtures({ fixtures, db });
+      const tasks = createFixtures({ fixtures, db });
 
-      const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
-      assert.lengthOf(parallelTasks, 1, 'parallelTasks');
-
-      const serialTasks = (parallelTasks[0].tasks || []).filter(
-        ({ type }) => type === TaskType.SERIAL_TASK,
-      );
+      const serialTasks = (tasks || []).filter(({ type }) => type === TaskType.SERIAL_TASK);
       assert.lengthOf(serialTasks, 1, 'serialTasks');
 
       const bulkCreateTasks = (serialTasks[0].tasks || []).filter(
@@ -116,14 +111,9 @@ describe(`Fixtures parser`, () => {
         UserInfo: [],
       };
 
-      const tasks = parseFixtures({ fixtures, db });
+      const tasks = createFixtures({ fixtures, db });
 
-      const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
-      assert.lengthOf(parallelTasks, 1, 'parallelTasks');
-
-      const serialTasks = (parallelTasks[0].tasks || []).filter(
-        ({ type }) => type === TaskType.SERIAL_TASK,
-      );
+      const serialTasks = (tasks || []).filter(({ type }) => type === TaskType.SERIAL_TASK);
       assert.lengthOf(serialTasks, 3, 'serialTasks');
 
       // -----------------
@@ -162,14 +152,9 @@ describe(`Fixtures parser`, () => {
         ],
       };
 
-      const tasks = parseFixtures({ fixtures, db });
+      const tasks = createFixtures({ fixtures, db });
 
-      const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
-      assert.lengthOf(parallelTasks, 1, 'parallelTasks');
-
-      const serialTasks = (parallelTasks[0].tasks || []).filter(
-        ({ type }) => type === TaskType.SERIAL_TASK,
-      );
+      const serialTasks = (tasks || []).filter(({ type }) => type === TaskType.SERIAL_TASK);
       assert.lengthOf(serialTasks, 1, 'serialTasks');
 
       const [bulkCreateTask = null] = serialTasks[0].tasks || [];
@@ -194,14 +179,9 @@ describe(`Fixtures parser`, () => {
         ],
       };
 
-      const tasks = parseFixtures({ fixtures, db });
+      const tasks = createFixtures({ fixtures, db });
 
-      const parallelTasks = tasks.filter(({ type }) => type === TaskType.PARALLEL_TASK);
-      assert.lengthOf(parallelTasks, 1, 'parallelTasks');
-
-      const serialTasks = (parallelTasks[0].tasks || []).filter(
-        ({ type }) => type === TaskType.SERIAL_TASK,
-      );
+      const serialTasks = (tasks || []).filter(({ type }) => type === TaskType.SERIAL_TASK);
       assert.lengthOf(serialTasks, 1, 'serialTasks');
 
       const [bulkCreateTask = null] = serialTasks[0].tasks || [];

@@ -9,6 +9,27 @@ import {
 export function parseFixtures(args: { fixtures: Fixtures; db: SequelizeInstance }): Task[] {
   const { fixtures, db } = args;
 
+  const truncateTasks = truncateFixtures({ fixtures, db });
+
+  const createTasks = createFixtures({ fixtures, db });
+
+  const createTaskGroup = { type: TaskType.PARALLEL_TASK, tasks: createTasks };
+
+  return [...truncateTasks, createTaskGroup];
+}
+
+export function truncateFixtures(args: { fixtures: Fixtures; db: SequelizeInstance }): Task[] {
+  const { fixtures } = args;
+
+  return Object.keys(fixtures).map(modelName => ({
+    modelName,
+    type: TaskType.TRUNCATE,
+  }));
+}
+
+export function createFixtures(args: { fixtures: Fixtures; db: SequelizeInstance }): Task[] {
+  const { fixtures, db } = args;
+
   const dependencyMapTied = getDependencyMap({
     db,
     associationType: [AT.BelongsTo, AT.HasMany, AT.HasOne],
@@ -16,7 +37,7 @@ export function parseFixtures(args: { fixtures: Fixtures; db: SequelizeInstance 
 
   const dependencyMapBelongsTo = getDependencyMap({
     db,
-    associationType: [AT.BelongsTo, AT.HasMany, AT.HasOne],
+    associationType: [AT.BelongsTo],
   });
 
   const dependencyGroups = splitToDependencyGroups({
@@ -24,12 +45,7 @@ export function parseFixtures(args: { fixtures: Fixtures; db: SequelizeInstance 
     modelNames: Object.keys(fixtures),
   });
 
-  const truncateTasks = Object.keys(fixtures).map(modelName => ({
-    modelName,
-    type: TaskType.TRUNCATE,
-  }));
-
-  const createTasks = dependencyGroups.map((dependencyGroup: string[]) => {
+  return dependencyGroups.map((dependencyGroup: string[]) => {
     const sortedModels = modelDependencySort({
       dependencyMap: dependencyMapBelongsTo,
       modelNames: dependencyGroup,
@@ -53,8 +69,4 @@ export function parseFixtures(args: { fixtures: Fixtures; db: SequelizeInstance 
       }),
     };
   });
-
-  const createTaskGroup = { type: TaskType.PARALLEL_TASK, tasks: createTasks };
-
-  return [...truncateTasks, createTaskGroup];
 }
